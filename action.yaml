@@ -1,0 +1,46 @@
+name: Detect Python pyproject.toml info
+description: Read pyproject.toml and output src package path
+
+outputs:
+  path:
+    description: "Detected package path (e.g. src/mypackage)"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Detect path
+      shell: bash
+      run: |
+        python3 - <<'EOF'
+        import tomllib
+        from pathlib import Path
+        import os
+
+        pyproject = Path("pyproject.toml")
+        if not pyproject.exists():
+            print("pyproject.toml not found")
+            exit(1)
+
+        try:
+            data = tomllib.loads(pyproject.read_text())
+            name = data["project"]["name"]
+        except (KeyError, Exception) as e:
+            print(f"Error reading pyproject.toml: {e}")
+            exit(1)
+
+        pkg = name.replace("-", "_")
+        
+        # Check src/pkg first
+        src_pkg = Path("src") / pkg
+        root_pkg = Path(pkg)
+        
+        if src_pkg.is_dir():
+            path = str(src_pkg)
+        else:
+            path = str(root_pkg)
+
+
+        print(f"Detected path: {path}")
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            f.write(f"path={path}\n")
+        EOF
