@@ -1,5 +1,8 @@
 name: Detect Python pyproject.toml info
 description: Read pyproject.toml and output src package path
+branding:
+  icon: 'breifcase'
+  color: 'orange'
 
 outputs:
   path:
