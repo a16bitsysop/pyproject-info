@@ -4,6 +4,8 @@ description: Read pyproject.toml and output src package path
 outputs:
   path:
     description: "Detected package path (e.g. src/mypackage)"
+  pypi:
+    description: "PyPI project path (e.g. p/project-name)"
 
 runs:
   using: "composite"
@@ -41,6 +43,9 @@ runs:
 
 
         print(f"Detected path: {path}")
+        pypi = f"{name[0]}/{name}"
+        print(f"Detected pypi: {pypi}")
         with open(os.environ["GITHUB_OUTPUT"], "a") as f:
             f.write(f"path={path}\n")
+            f.write(f"pypi={pypi}\n")
         EOF
