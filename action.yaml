@@ -1,19 +1,22 @@
 name: Detect Python pyproject.toml info
 description: Read pyproject.toml and output src package path
 branding:
-  icon: 'breifcase'
+  icon: 'briefcase'
   color: 'orange'
 
 outputs:
   path:
     description: "Detected package path (e.g. src/mypackage)"
+    value: ${{ steps.detect.outputs.path }}
   pypi:
     description: "PyPI project path (e.g. p/project-name)"
+    value: ${{ steps.detect.outputs.pypi }}
 
 runs:
   using: "composite"
   steps:
     - name: Detect path
+      id: detect
       shell: bash
       run: |
         python3 - <<'EOF'
